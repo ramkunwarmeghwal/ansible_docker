@@ -1,0 +1,47 @@
+- hosts: docker
+  gather_facts: false
+  tasks:
+  - name: Add repository
+    yum_repository:
+     name: dockerrepo
+     baseurl: https://download.docker.com/linux/centos/7/x86_64/stable/
+     description: mydockerrepo
+     enabled: true
+     gpgcheck: no
+
+  - name: install software python
+    package:
+         name: python36
+         state: present
+
+
+     
+  - name: install python library
+    pip:
+       name: docker-py
+  
+  - name: install docker software
+    command: "yum install docker-ce -y --nobest"
+ 
+  - name: start docker service
+    service:
+          name: "docker"
+          state: "started"
+          enabled: yes
+  - name: pull image for docker
+    docker_image:
+           name: ubuntu:14.04
+           source: pull
+
+
+
+  - name: run conainer
+    docker_container:
+           name: myos2
+           image: ubuntu:14.04
+           state: present
+           command: sleep infinity
+
+  - name: start docker container
+    command: "docker start myos2"
+  
